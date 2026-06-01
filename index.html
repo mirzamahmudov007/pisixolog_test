@@ -1,0 +1,504 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+
+#app { min-height: 600px; }
+
+.hero {
+  background: linear-gradient(135deg, #0D47A1 0%, #1565C0 40%, #0288D1 100%);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem 1.5rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30px; left: -30px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.hero-logo {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 3px;
+  margin-bottom: 0.5rem;
+}
+.hero-title {
+  font-size: 22px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+.hero-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+}
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 1rem;
+}
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transition: background 0.3s;
+}
+.dot.active { background: #fff; }
+.dot.done { background: rgba(255,255,255,0.6); }
+
+.q-card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 1.25rem 1.25rem 1rem;
+  margin-bottom: 1rem;
+}
+.q-num {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  margin-bottom: 0.4rem;
+}
+.q-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+.options { display: flex; flex-direction: column; gap: 8px; }
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--color-border-tertiary);
+  background: var(--color-background-secondary);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  font-size: 13.5px;
+  color: var(--color-text-primary);
+  line-height: 1.45;
+  text-align: left;
+}
+.opt:hover { border-color: #1565C0; background: #E3F2FD; color: #0D47A1; }
+.opt.selected { border-color: #1565C0; background: #E3F2FD; color: #0D47A1; font-weight: 500; }
+.opt-badge {
+  min-width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #1565C0;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.opt:not(.selected) .opt-badge { background: var(--color-border-secondary); color: var(--color-text-secondary); }
+
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  gap: 8px;
+}
+.btn-back {
+  padding: 8px 18px;
+  border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--color-border-secondary);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-back:disabled { opacity: 0.3; cursor: default; }
+.btn-next {
+  padding: 9px 24px;
+  border-radius: var(--border-radius-md);
+  border: none;
+  background: #1565C0;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  flex: 1;
+  max-width: 200px;
+}
+.btn-next:disabled { opacity: 0.4; cursor: default; }
+.btn-next:hover:not(:disabled) { background: #0D47A1; }
+
+.result-card {
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  border: 0.5px solid var(--color-border-tertiary);
+}
+.result-header {
+  padding: 1.5rem 1.25rem 1rem;
+  text-align: center;
+}
+.result-icon {
+  font-size: 36px;
+  margin-bottom: 0.5rem;
+}
+.result-type {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 0.25rem;
+}
+.result-name {
+  font-size: 20px;
+  font-weight: 500;
+  color: #fff;
+}
+.result-tag {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 3px 12px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.15);
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+}
+.result-body { padding: 1.25rem; }
+.result-desc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.skills-label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--color-text-tertiary);
+  margin-bottom: 8px;
+}
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 1.25rem;
+}
+.skill-pill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 0.5px solid;
+}
+.score-bar-wrap { margin-bottom: 1rem; }
+.score-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.score-label { font-size: 12px; color: var(--color-text-secondary); min-width: 80px; }
+.score-track { flex: 1; height: 6px; background: var(--color-background-secondary); border-radius: 3px; overflow: hidden; }
+.score-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.score-val { font-size: 12px; color: var(--color-text-tertiary); min-width: 20px; text-align: right; }
+.btn-restart {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--color-border-secondary);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+.btn-restart:hover { background: var(--color-background-secondary); }
+.progress-text {
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+}
+</style>
+
+<div id="app">
+<div class="hero">
+  <div class="hero-logo">RABOLA IT MARKAZI</div>
+  <div class="hero-title">Kelajakdagi Kasbim</div>
+  <div class="hero-sub">8–18 yoshlar uchun psixologik test</div>
+  <div class="dots" id="dots"></div>
+</div>
+<div id="test-area"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "Bo'sh vaqtingda nima qilish seng uchun eng maroqli?",
+    opts: [
+      { l: "A", t: "Rasm chizish, video montaj qilish yoki Canva/Figmada dizaynlar yaratish" },
+      { l: "B", t: "Telefon va kompyuter sozlamalarini o'rganish, o'yinlar qanday yaratilganini bilish" },
+      { l: "C", t: "Do'stlar bilan o'yinlar tashkil qilish, jamoani boshqarish yoki hikoyalar aytish" },
+      { l: "D", t: "Konstruktorlar yig'ish, shaxmat o'ynash yoki qiyin boshqotirmalarni yechish" }
+    ]
+  },
+  {
+    q: "Maktabda yoki to'garaklarda qaysi yo'nalish senga ko'proq yoqadi?",
+    opts: [
+      { l: "A", t: "Tasviriy san'at, adabiyot, musiqa yoki ijodiy darslar" },
+      { l: "B", t: "Informatika, texnologiya yoki robototexnika" },
+      { l: "C", t: "Tarix, tillar yoki jamoaviy sport o'yinlari" },
+      { l: "D", t: "Matematika, geometriya yoki fizika" }
+    ]
+  },
+  {
+    q: "Do'stlaring senga qanday masala bilan ko'proq murojaat qilishadi?",
+    opts: [
+      { l: "A", t: "\"Tadbir uchun chiroyli afisha qilib ber\" yoki \"Rasmni qayta ishlab ber\"" },
+      { l: "B", t: "\"Telefonimga o'yin o'rnatib ber\" yoki \"Kompyuterim ishlamayapti, ko'rib ber\"" },
+      { l: "C", t: "\"Yangi o'yin boshlaymiz, qoidalarni tushuntirib sardor bo'l\"" },
+      { l: "D", t: "\"Uyga vazifadagi qiyin masalani yechishga yordam ber\"" }
+    ]
+  },
+  {
+    q: "Tug'ilgan kuningga qanday sovg'a olishni orzu qilasan?",
+    opts: [
+      { l: "A", t: "Professional rasm chizish plansheti yoki kreativ dizayn to'plami" },
+      { l: "B", t: "Dasturlash mumkin bo'lgan robot yoki Arduino to'plami" },
+      { l: "C", t: "Qiziqarli stol o'yini — \"Mafiya\", \"Monopoliya\" yoki shunga o'xshash" },
+      { l: "D", t: "Murakkab 3D pazl, Rubik kubigi yoki mantiqiy labirint" }
+    ]
+  },
+  {
+    q: "Guruh bo'lib veb-sayt tayyorlasangiz, qaysi rolni tanlardingiz?",
+    opts: [
+      { l: "A", t: "Sayt ko'rinishini, ranglar va logotipni chizish — Dizayner" },
+      { l: "B", t: "Sayt kodini yozish, tugmalarni ishlatish — Dasturchi" },
+      { l: "C", t: "Loyihani taqdimot qilish, guruhni boshqarish — Lider/Menejer" },
+      { l: "D", t: "Xarajatlarni hisoblash va xatoliklarni tekshirish — Analitik/Tester" }
+    ]
+  },
+  {
+    q: "YouTube yoki TikTok'da ko'proq qanday videolarni tomosha qilasan?",
+    opts: [
+      { l: "A", t: "Animatsiyalar, 3D modellar, dizayn darslari yoki chiroyli vlogs" },
+      { l: "B", t: "Yangi texnologiyalar, o'yin yaratish jarayonlari yoki kodlash darslari" },
+      { l: "C", t: "Blogerlar intervyulari, biznes motivatsiyalar yoki hayotiy lifehacklar" },
+      { l: "D", t: "Ilmiy tajribalar, qiziqarli faktlar yoki mantiqiy detektiv voqealar" }
+    ]
+  },
+  {
+    q: "Biror ishda kutilmagan muammo yuzaga kelsa, uni qanday hal qilasan?",
+    opts: [
+      { l: "A", t: "Muammoga boshqa tomondan qarab, noodatiy va chiroyli yechim o'ylab topaman" },
+      { l: "B", t: "Google yoki YouTube'dan xato kodini qidirib, texnik yechimini topaman" },
+      { l: "C", t: "Jamoani yig'ib, hammaning fikrini eshitib birgalikda hal qilamiz" },
+      { l: "D", t: "Muammoni qismlarga bo'lib, bosqichma-bosqich reja asosida yechaman" }
+    ]
+  },
+  {
+    q: "Kompyuter yoki telefonda qaysi turdagi o'yinlar senga ko'proq yoqadi?",
+    opts: [
+      { l: "A", t: "Minecraft (chiroyli uylar qurish), rang berish yoki dizayn o'yinlari" },
+      { l: "B", t: "Roblox (o'z dunyosini yaratish), simulyatorlar yoki qurilish strategiyalari" },
+      { l: "C", t: "Brawl Stars, PUBG yoki jamoaviy ko'pchilik o'ynaydigan o'yinlar" },
+      { l: "D", t: "Shaxmat, Sudoku yoki mantiqiy viktorinalar" }
+    ]
+  },
+  {
+    q: "Kelajakda qanday ish muhitida ishlashni tasavvur qilasan?",
+    opts: [
+      { l: "A", t: "Kreativ studiyada, erkin va ijodiy dizaynerlar muhitida" },
+      { l: "B", t: "Zamonaviy IT kompaniyada, noutbuk qarshisida kod yozib" },
+      { l: "C", t: "Katta jamoada, odamlarga yo'nalish beruvchi rahbar sifatida" },
+      { l: "D", t: "Ilmiy laboratoriyada yoki yirik loyihalar tahlilida" }
+    ]
+  },
+  {
+    q: "O'zingni bitta so'z bilan qanday xarakterlagan bo'larding?",
+    opts: [
+      { l: "A", t: "Ijodkor — yangi g'oyalar, ranglar va shakllar dunyosida yashayman" },
+      { l: "B", t: "Ixtirochi — har narsa qanday ishlashini bilgim keladi" },
+      { l: "C", t: "Kirishimli — odamlar bilan muloqot mening kuchim" },
+      { l: "D", t: "Tafakkurchi — mantiq va tartib hayotimning asosi" }
+    ]
+  }
+];
+
+const profiles = {
+  A: {
+    name: "Raqamli San'atkor",
+    tag: "Kreativ & Vizual",
+    color: "#7B1FA2",
+    bg: "linear-gradient(135deg, #6A1B9A, #AB47BC)",
+    icon: "🎨",
+    desc: "Siz vizual obrazlar, ranglar va shakllar dunyosida yashaysiz. Narsalarning tashqi ko'rinishini his qila olish — bu sizning kuchli tomoningiz. Ijodkorlik va texnologiyani birlashtirib, kelajakda ajoyib ishlar qilasiz.",
+    skills: ["Grafik dizayn", "Figma / Canva", "3D modellashtirish", "Video montaj", "UI/UX dizayn", "Animatsiya"],
+    pill: { bg: "#F3E5F5", color: "#6A1B9A", border: "#CE93D8" }
+  },
+  B: {
+    name: "Bo'lajak IT Muhandisi",
+    tag: "Texno & Ixtirochi",
+    color: "#1565C0",
+    bg: "linear-gradient(135deg, #0D47A1, #42A5F5)",
+    icon: "💻",
+    desc: "Siz texnika va dasturiy ta'minotga qiziqish bildirish jihatidan alohidasiz. Jarayonlar qanday ishlashini o'rganish, muammolarni texnik yo'l bilan hal qilish — bu sizning asosiy kuchingiz.",
+    skills: ["Python dasturlash", "Scratch", "Robototexnika", "Arduino", "O'yin yaratish", "QA testlash"],
+    pill: { bg: "#E3F2FD", color: "#1565C0", border: "#90CAF9" }
+  },
+  C: {
+    name: "Tashkilotchi va Lider",
+    tag: "Kommunikator & Menejyer",
+    color: "#2E7D32",
+    bg: "linear-gradient(135deg, #1B5E20, #43A047)",
+    icon: "🚀",
+    desc: "Odamlar bilan til topishish, guruhni boshqarish va o'z fikrini aniq tushuntirish — bu sizning tabiiy qobiliyatingiz. Kelajakda katta loyihalar boshqaruvida yoki raqamli marketing sohalarida porlaydigan bo'lasiz.",
+    skills: ["IT-menejment", "Blogerlik", "Notiqlik san'ati", "SMM marketing", "Loyiha boshqaruvi", "Jamoaviy ish"],
+    pill: { bg: "#E8F5E9", color: "#2E7D32", border: "#A5D6A7" }
+  },
+  D: {
+    name: "Analitik Fikrlovchi",
+    tag: "Mantiq & Strategiya",
+    color: "#E65100",
+    bg: "linear-gradient(135deg, #BF360C, #FF7043)",
+    icon: "🧠",
+    desc: "Mantiqiy fikrlash, aniqlik va tizimlilik sizda ustunlik qiladi. Tartibsizlikni yoqtirmaysiz, hamma narsani reja bilan qilasiz. Data va algoritmlar dunyosi siz uchun yaratilgan.",
+    skills: ["Data analitika", "Matematik algoritmlar", "Shaxmat", "Tizimli muhandislik", "Dasturlash arxitekturasi", "Statistika"],
+    pill: { bg: "#FBE9E7", color: "#BF360C", border: "#FFAB91" }
+  }
+};
+
+const scoreColors = {
+  A: "#AB47BC",
+  B: "#42A5F5",
+  C: "#66BB6A",
+  D: "#FF7043"
+};
+
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+
+function renderDots() {
+  const d = document.getElementById("dots");
+  d.innerHTML = questions.map((_, i) =>
+    `<div class="dot ${i < current ? 'done' : i === current ? 'active' : ''}"></div>`
+  ).join('');
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const sel = answers[current];
+  const area = document.getElementById("test-area");
+  area.innerHTML = `
+    <div class="q-card">
+      <div class="q-num">Savol ${current + 1} / ${questions.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">
+        ${q.opts.map(o => `
+          <button class="opt ${sel === o.l ? 'selected' : ''}" onclick="pick('${o.l}')">
+            <span class="opt-badge">${o.l}</span>
+            <span>${o.t}</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goBack()" ${current === 0 ? 'disabled' : ''}>← Orqaga</button>
+      <button class="btn-next" id="btn-next" onclick="goNext()" ${sel === null ? 'disabled' : ''}>
+        ${current === questions.length - 1 ? 'Natijani ko\'rish ✓' : 'Keyingisi →'}
+      </button>
+    </div>
+  `;
+}
+
+function pick(letter) {
+  answers[current] = letter;
+  renderQuestion();
+  renderDots();
+}
+
+function goNext() {
+  if (answers[current] === null) return;
+  if (current < questions.length - 1) {
+    current++;
+    renderQuestion();
+    renderDots();
+  } else {
+    showResult();
+  }
+}
+
+function goBack() {
+  if (current > 0) {
+    current--;
+    renderQuestion();
+    renderDots();
+  }
+}
+
+function showResult() {
+  const counts = { A: 0, B: 0, C: 0, D: 0 };
+  answers.forEach(a => { if (a) counts[a]++; });
+  const winner = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+  const p = profiles[winner];
+  const total = questions.length;
+
+  document.getElementById("test-area").innerHTML = `
+    <div class="result-card">
+      <div class="result-header" style="background: ${p.bg}">
+        <div class="result-icon">${p.icon}</div>
+        <div class="result-type">SIZNING TURININGIZ</div>
+        <div class="result-name">${p.name}</div>
+        <div class="result-tag">${p.tag}</div>
+      </div>
+      <div class="result-body">
+        <p class="result-desc">${p.desc}</p>
+
+        <div class="skills-label">TAVSIYA ETILGAN YO'NALISHLAR</div>
+        <div class="skills-grid">
+          ${p.skills.map(s => `<span class="skill-pill" style="background:${p.pill.bg};color:${p.pill.color};border-color:${p.pill.border}">${s}</span>`).join('')}
+        </div>
+
+        <div class="skills-label">NATIJALAR TAQSIMOTI</div>
+        <div class="score-bar-wrap">
+          ${['A','B','C','D'].map(k => `
+            <div class="score-row">
+              <span class="score-label">${profiles[k].name.split(' ')[0]}</span>
+              <div class="score-track">
+                <div class="score-fill" style="width:${Math.round(counts[k]/total*100)}%;background:${scoreColors[k]}"></div>
+              </div>
+              <span class="score-val">${counts[k]}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;font-size:13px;color:var(--color-text-secondary);margin-bottom:1rem;line-height:1.6;">
+          <strong style="color:var(--color-text-primary);font-weight:500">📍 RABOLA IT Markazi</strong><br>
+          Olmaliq shahar, Raduga dahasi, Anisa Shop 2-qavat<br>
+          <a href="tel:+998950077050" style="color:#1565C0">+998 95 007 70 50</a>
+        </div>
+
+        <button class="btn-restart" onclick="restart()">↺ Testni qaytadan boshlash</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("dots").innerHTML = questions.map(() => `<div class="dot done"></div>`).join('');
+}
+
+function restart() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  renderDots();
+  renderQuestion();
+}
+
+renderDots();
+renderQuestion();
+</script>
